@@ -16,7 +16,7 @@ module.exports = {
     start: async ( 
         Miku, 
         m, 
-        { text, mentionByTag } 
+        { text, prefix} 
     ) => {
       var today = new Date();
       if (today.getDay() == 6 || today.getDay() == 5 || today.getDay() == 0 || today.getDay() == 3 || today.getDay() == 4 || today.getDay() == 2 || today.getDay() == 1){
