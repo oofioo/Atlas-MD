@@ -1,7 +1,11 @@
+const mongoose = require("mongoose");
+require("../../config.js");
+require("../../Core.js");
 const config = require('../../config');
 const { player } = require("../../Database/rpgschema.js");
 const eco = require('discord-mongoose-economy')
 const ty = eco.connect(config.mongodb);
+const fs = require("fs");
 
 module.exports = {
     name: "buy",
@@ -65,6 +69,51 @@ let deduct = await eco.deduct(m.sender, cara, 5000);
 user.inventory.diamondpickaxe += 1;
 await user.save();
 Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully purchased a diamond pickaxe!`}, { quoted: m });
+}
+else if(item === "diamond") {
+if(user.inventory.diamonds < 1) {
+return Miku.sendMessage(m.from, { text: `😕 You don't have enough diamonds to sell.` }, { quoted: m });
+}
+const give = await eco.give(m.sender, cara, 800);
+user.inventory.diamonds -= 1;
+await user.save();
+Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully sold a diamond!`}, { quoted: m });
+}
+else if(item === "diamond100") {
+if(user.inventory.diamonds < 100) {
+return Miku.sendMessage(m.from, { text: `😕 You don't have enough diamonds to sell.` }, { quoted: m });
+}
+const give = await eco.give(m.sender, cara, 80000);
+user.inventory.diamonds -= 100;
+await user.save();
+Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully sold 100 diamonds!`}, { quoted: m });
+}
+else if(item === "iron") {
+if(user.inventory.iron < 1) {
+return Miku.sendMessage(m.from, { text: `😕 You don't have enough iron to sell.` }, { quoted: m });
+}
+const give = await eco.give(m.sender, cara, 500);
+user.inventory.iron -= 1;
+await user.save();
+Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully sold a iron!`}, { quoted: m });
+}
+else if(item === "wood") {
+if(user.inventory.wood < 1) {
+return Miku.sendMessage(m.from, { text: `😕 You don't have enough wood to sell.` }, { quoted: m });
+}
+const give = await eco.give(m.sender, cara, 100);
+user.inventory.wood -= 1;
+await user.save();
+Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully sold a wood!`}, { quoted: m });
+}
+else if(item === "stone") {
+if(user.inventory.stone < 1) {
+return Miku.sendMessage(m.from, { text: `😕 You don't have enough stone to sell.` }, { quoted: m });
+}
+const give = await eco.give(m.sender, cara, 100);
+user.inventory.stone -= 1;
+await user.save();
+Miku.sendMessage(m.from, { text: `[ *💰PURCHASE RESULT💰* ]\n\n Successfully sold a stone!`}, { quoted: m });
 }
 else {
 return Miku.sendMessage(m.from, { text: `😕 Invalid item. Please use ${prefix}buy /item to purchase an item.` }, { quoted: m });
