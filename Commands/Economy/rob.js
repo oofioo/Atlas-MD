@@ -16,7 +16,7 @@ module.exports = {
     start: async ( 
         Miku, 
         m, 
-        { mentionByTag } 
+        { text, mentionByTag } 
     ) => {
         if (!text && !m.quoted) {
         return Miku.sendMessage( 
