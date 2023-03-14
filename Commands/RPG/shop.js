@@ -1,5 +1,4 @@
 const config = require('../../config');
-const { player } = require("../../Database/rpgschema.js");
 const eco = require('discord-mongoose-economy')
 const ty = eco.connect(config.mongodb);
 
