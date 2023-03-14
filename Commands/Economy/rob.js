@@ -16,7 +16,7 @@ module.exports = {
     start: async ( 
         Miku, 
         m, 
-        { text, prefix, isBotAdmin, isAdmin, mentionByTag, pushName, isCreator} 
+        { mentionByTag } 
     ) => {
         if (!text && !m.quoted) {
         return Miku.sendMessage( 
