@@ -1,3 +1,8 @@
+const mongoose = require("mongoose");
+require("../../config.js");
+require("../../Core.js");
+const { mku, mk } = require("../../Database/dataschema.js");
+const fs = require("fs");
 const config = require('../../config');
 const eco = require('discord-mongoose-economy')
 const ty = eco.connect(config.mongodb);
@@ -11,12 +16,12 @@ module.exports = {
     start: async ( 
         Miku, 
         m, 
-        { text, mentionByTag } 
+        { text, prefix, isBotAdmin, isAdmin, mentionByTag, pushName, isCreator} 
     ) => {
         if (!text && !m.quoted) {
         return Miku.sendMessage( 
           m.from, 
-          { text: `Please tag a user to *Ban*!` }, 
+          { text: `Please tag a user to *Rob*!` }, 
           { quoted: m } 
         )}
        
@@ -30,9 +35,10 @@ module.exports = {
         const user1 = m.sender;
         const user2 = mentionedUser;
         const k = 100;
-        const amount = Math.floor(Math.random() * 200) + 1;
         const balance1 = await eco.balance(user1, cara);
-        const balance2 = await eco.balance(user2, cara);
+        const balance2 = await eco.balance(user2, cara);       
+        const amount = Math.floor(balance2.wallet * Math.random()) + 1;
+        const amount2 = Math.floor(balance1.wallet * Math.random()) + 1;
         const typ = ['ran','rob','caught'];
         const random = typ[Math.floor(Math.random() * typ.length)];
         if (k > balance1.wallet) return Miku.sendMessage(m.from, { text: '*☹️ You don\'t have enough money to pay fine incase you get caught*' }, { quoted: m }); 
@@ -46,8 +52,8 @@ module.exports = {
                 await eco.give(user1, cara, amount); 
                 return Miku.sendMessage(m.from, { text: `*🤑 You have stolen ${amount} successfully .🗡️*` }, { quoted: m });
             case 'caught':
-                await eco.deduct(user1, cara, balance1.wallet); 
-                return Miku.sendMessage(m.from, { text: `*Sorry FBI👮 caught up with you, you lost all 🪙 in wallet.*` }, { quoted: m });
+                await eco.deduct(user1, cara, amount2); 
+                return Miku.sendMessage(m.from, { text: `*Sorry FBI👮 caught up with you, you lost ${amount2} 🪙 in wallet.*` }, { quoted: m });
                 default:
                 return Miku.sendMessage(m.from, { text: 'What are you trying to do?' }, { quoted: m });
                 }
