@@ -1,3 +1,8 @@
+const mongoose = require("mongoose");
+require("../../config.js");
+require("../../Core.js");
+const { mku, mk } = require("../../Database/dataschema.js");
+const fs = require("fs");
 const config = require('../../config');
 const eco = require('discord-mongoose-economy')
 const ty = eco.connect(config.mongodb);
@@ -11,10 +16,10 @@ module.exports = {
     start: async ( 
         Miku, 
         m, 
-        { text, prefix} 
+        { text, prefix, isBotAdmin, isAdmin, mentionByTag, pushName, isCreator} 
     ) => {
       var today = new Date();
-      if (today.getDay() == 6 || today.getDay() == 5 || today.getDay() == 0){
+      if (today.getDay() == 6 || today.getDay() == 5 || today.getDay() == 0 || today.getDay() == 3 || today.getDay() == 4 || today.getDay() == 2 || today.getDay() == 1){
           if (text == 'help') return m.reply(`*1:* Use ${prefix}slot to play\n\n*2:* You must have 🪙100 in your wallet\n\n*3:* If you don't have money in wallet then withdraw from your bank\n\n*4:* If you don't have money in your bank too then use economy features to gain money`)
           if (text == 'money') return m.reply(`*1:* Small Win --> +🪙20\n\n*2:* Small Lose --> -🪙20\n\n*3:* Big Win --> +🪙100\n\n*4:* Big Lose --> -🪙50\n\n*5:* 🎉 JackPot --> +🪙1000`)
           const fruit1= ["🥥", "🍎", "🍇"]
