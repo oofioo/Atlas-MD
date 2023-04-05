@@ -14,26 +14,18 @@ module.exports = {
         { text: `Please provide a song name to play !` },
         { quoted: m }
       );
-    const songSerachTerm = args.join(" ");
-    const songInfo = await yts(songSerachTerm);
+    const songSearchTerm = args.join(" ");
+    const songInfo = await yts(songSearchTerm);
     const song = songInfo.videos[0];
-    let buttons = [
-      {
-        buttonId: `${prefix}ytad ${song.url}`,
-        buttonText: { displayText: "♬ Audio" },
-        type: 1,
-      },
-      {
-        buttonId: `${prefix}ytvd ${song.url}`,
-        buttonText: { displayText: "▶ Video" },
-        type: 1,
-      },
-      {
-        buttonId: `${prefix}ytdoc ${song.url}`,
-        buttonText: { displayText: "∎ Document" },
-        type: 1,
-      },
-    ];
+
+    let instructions = `
+To play audio: ${prefix}ytad ${song.url}
+
+To play video: ${prefix}ytvd ${song.url}
+
+To send as document: ${prefix}ytdoc ${song.url}
+`;
+
     let buttonMessage = {
       image: { url: song.thumbnail },
       caption: `
@@ -48,9 +40,8 @@ module.exports = {
 
 *Channel :* _${song.author.name}_
 
-*Url :* _${song.url}_\n\n`,
+*Url :* _${song.url}_\n\n${instructions}`,
       footer: `*${botName}*`,
-      buttons: buttons,
       headerType: 4,
     };
     Miku.sendMessage(m.from, buttonMessage, { quoted: m });
