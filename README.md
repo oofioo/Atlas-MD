@@ -57,7 +57,7 @@ Konnichiwa Senpai, I am "Atlas" an Opensource WhatsApp bot made by <a href="http
 </h4>
 
 <p align="center" >
-    <a href="https://github.com/oofioo/Atlas-MD">
+    <a href="https://www.repl.it/github.com/oofioo/Atlas-MD">
     <img src="https://i.ibb.co/zrB5kMh/deploy-on-repl.jpg" width="170px" alt="Deploy on Heroku" >
     </a>
     <br>     
