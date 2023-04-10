@@ -1,49 +1,72 @@
+const YT = require("../../lib/ytdl-core.js");
+const fs = require("fs");
 const yts = require("youtube-yts");
+const fetch = require("node-fetch");
+const { getBuffer } = require("../../lib/myfunc");
+const ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 module.exports = {
   name: "play",
-  alias: ["ytplay", "song"],
-  desc: "To play a song from youtube",
+  alias: ["yt"],
+  desc: "To download a song as mp3 from YouTube link",
+  cool: 30,
   category: "Media",
-  usage: `play <song name>`,
+  usage: `ytad <song link>`,
   react: "🍁",
-  start: async (Miku, m, { text, prefix, args }) => {
+  start: async (Miku, m, { text, prefix, args, mime }) => {
     if (!args[0])
       return Miku.sendMessage(
         m.from,
-        { text: `Please provide a song name to play !` },
+        { text: `Please provide a YouTube Video link !` },
         { quoted: m }
       );
-    const songSearchTerm = args.join(" ");
-    const songInfo = await yts(songSearchTerm);
+      const songSerachTerm = args.join(" ");
+    const songInfo = await yts(songSerachTerm);
     const song = songInfo.videos[0];
+    let videoUrl = song.url;
+    let videoId = videoUrl.split("v=")[1];
 
-    let instructions = `
-To play audio: ${prefix}ytad ${song.url}
+    yts({ videoId }).then((result) => {
+      YT.mp3(videoId).then((file) => {
+        const inputPath = file.path;
+        const outputPath = inputPath + ".opus";
 
-To play video: ${prefix}ytvd ${song.url}
-
-To send as document: ${prefix}ytdoc ${song.url}
-`;
-
-    let buttonMessage = {
-      image: { url: song.thumbnail },
-      caption: `
-           *『 Youtube Audio Player 』*
-
-
-*Song name :* _${song.title}_
-
-*Duration :* _${song.timestamp}_
-
-*Uploaded :* _${song.ago}_
-
-*Channel :* _${song.author.name}_
-
-*Url :* _${song.url}_\n\n${instructions}`,
-      footer: `*${botName}*`,
-      headerType: 4,
-    };
-    Miku.sendMessage(m.from, buttonMessage, { quoted: m });
+        ffmpeg(inputPath)
+          .format("opus")
+          .on("error", (err) => {
+            console.error("Error converting to opus:", err);
+          })
+          .on("end", async () => {
+            const thumbnailBuffer = await getBuffer(song.thumbnail);
+            
+            Miku.sendMessage(
+              m.from,
+              {
+                audio: fs.readFileSync(outputPath),
+                mimetype: "audio/ogg; codecs=opus",
+                ptt: true,
+                contextInfo: {
+                  externalAdReply: {
+                    title: song.title.substr(0, 30),
+                    body: song.description.substr(0, 30),
+                    mediaType: 2,
+                    thumbnail: thumbnailBuffer,
+                    mediaUrl: song.url
+                  }
+                }
+              },
+              { quoted: m }
+            );
+            
+            fs.unlinkSync(inputPath);
+            fs.unlinkSync(outputPath);
+          })
+          
+          
+          .save(outputPath);
+      });
+    });
   },
 };
